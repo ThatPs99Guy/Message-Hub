@@ -1522,7 +1522,7 @@ end
 local OpenCloseGui=Instance.new("ScreenGui",PlayerGui);OpenCloseGui.Name="PlasmaOpenClose";OpenCloseGui.ResetOnSpawn=false
 local ocBtn=Instance.new("TextButton",OpenCloseGui);ocBtn.Size=UDim2.new(0,52,0,52)
 ocBtn.Position=UDim2.new(0.5,-26,0,70) -- Moved to old HUD bar position
-ocBtn.BackgroundColor3=C_BG;ocBtn.Text="Message";ocBtn.TextColor3=C_WHITE;ocBtn.TextSize=20;ocBtn.Font=Enum.Font.GothamBlack;ocBtn.Active=true;ocBtn.BorderSizePixel=0;mkCorner(ocBtn,14);mkStroke(ocBtn,C_ACCENT,2,0)
+ocBtn.BackgroundColor3=C_BG;ocBtn.Text="MHub";ocBtn.TextColor3=C_WHITE;ocBtn.TextSize=20;ocBtn.Font=Enum.Font.GothamBlack;ocBtn.Active=true;ocBtn.BorderSizePixel=0;mkCorner(ocBtn,14);mkStroke(ocBtn,C_ACCENT,2,0)
 ocBtn.MouseButton1Click:Connect(function() guiVisible=not guiVisible;MainFrame.Visible=guiVisible end)
 local _dd,_dds,_ddp=false,nil,nil
 ocBtn.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 then _dd=true;_dds=i.Position;_ddp=ocBtn.Position end end)

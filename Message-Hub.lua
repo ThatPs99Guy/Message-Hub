@@ -22,6 +22,127 @@ end
 
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
+-- ══════════════════════════════════════════════════════════
+-- ACCOUNT LOCKED KEY SYSTEM (IN-SCRIPT)
+-- ══════════════════════════════════════════════════════════
+
+local AllowedUsers = {
+    -- [UserId] = "Key"
+    [8117660737] = "messagehub_test",
+}
+
+local KeyFile = "JR_Hub_KeyData.json"
+local Player = game.Players.LocalPlayer
+local UserId = Player.UserId
+
+local function getHWID()
+    return tostring(UserId)
+end
+
+local function getUserKey()
+    return AllowedUsers[UserId]
+end
+
+local function isValidKey(input)
+    local requiredKey = getUserKey()
+    if requiredKey and input == requiredKey then
+        return true
+    end
+    return false
+end
+
+local function saveKeyData(key)
+    if writefile then
+        local data = {
+            key = key,
+            hwid = getHWID()
+        }
+        writefile(KeyFile, game:GetService("HttpService"):JSONEncode(data))
+    end
+end
+
+local function loadKeyData()
+    if readfile and isfile and isfile(KeyFile) then
+        local success, data = pcall(function()
+            return game:GetService("HttpService"):JSONDecode(readfile(KeyFile))
+        end)
+
+        if success and data then
+            if data.key and data.hwid then
+                if isValidKey(data.key) and data.hwid == getHWID() then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
+-- If player is not registered
+if not AllowedUsers[UserId] then
+    Player:Kick("You are not allowed to use this script.")
+    return
+end
+
+local KeyVerified = loadKeyData()
+
+if not KeyVerified then
+    local PlayerGui = Player:WaitForChild("PlayerGui")
+
+    local KeyGui = Instance.new("ScreenGui", PlayerGui)
+    KeyGui.Name = "Message_KeySystem"
+
+    local Frame = Instance.new("Frame", KeyGui)
+    Frame.Size = UDim2.new(0,300,0,160)
+    Frame.Position = UDim2.new(0.5,-150,0.5,-80)
+    Frame.BackgroundColor3 = Color3.new(0,0,0)
+    Frame.BorderSizePixel = 0
+
+    local Title = Instance.new("TextLabel", Frame)
+    Title.Size = UDim2.new(1,0,0,40)
+    Title.BackgroundTransparency = 1
+    Title.Text = "ENTER KEY"
+    Title.Font = Enum.Font.GothamBlack
+    Title.TextColor3 = Color3.new(1,1,1)
+    Title.TextSize = 18
+
+    local Box = Instance.new("TextBox", Frame)
+    Box.Size = UDim2.new(1,-20,0,40)
+    Box.Position = UDim2.new(0,10,0,50)
+    Box.Text = ""
+    Box.PlaceholderText = "Enter key here"
+    Box.Font = Enum.Font.GothamBold
+    Box.TextColor3 = Color3.new(1,1,1)
+    Box.BackgroundColor3 = Color3.new(0.1,0.1,0.1)
+    Box.BorderSizePixel = 0
+
+    local Button = Instance.new("TextButton", Frame)
+    Button.Size = UDim2.new(1,-20,0,40)
+    Button.Position = UDim2.new(0,10,1,-50)
+    Button.Text = "VERIFY"
+    Button.Font = Enum.Font.GothamBlack
+    Button.TextSize = 16
+    Button.TextColor3 = Color3.new(1,1,1)
+    Button.BackgroundColor3 = Color3.new(0.15,0.15,0.15)
+    Button.BorderSizePixel = 0
+
+    Button.MouseButton1Click:Connect(function()
+        local inputKey = Box.Text
+
+        if isValidKey(inputKey) then
+            saveKeyData(inputKey)
+            KeyVerified = true
+            KeyGui:Destroy()
+        else
+            Button.Text = "WRONG KEY"
+            task.wait(1)
+            Button.Text = "VERIFY"
+        end
+    end)
+
+    repeat task.wait() until KeyVerified
+end
+
 -- Clean previous instances
 for _, name in ipairs({"PlasmaDuelsGUI","PlasmaMobileButtons","PlasmaOpenClose","AutoStartMenu","MessageHudBar"}) do
 local old = PlayerGui:FindFirstChild(name)
@@ -1489,7 +1610,7 @@ local asFrame=Instance.new("Frame",AutoStartGui);asFrame.Name="AutoStartMenuFram
 asFrame.Size=UDim2.new(0,200,0,140);asFrame.Position=UDim2.new(0.5,-100,0.3,0)
 asFrame.BackgroundColor3=Color3.new(0,0,0);asFrame.Visible=false;mkCorner(asFrame,12);mkStroke(asFrame,C_ACCENT,2,0)
 local asTl=Instance.new("TextLabel",asFrame);asTl.Size=UDim2.new(1,0,0,24);asTl.Position=UDim2.new(0,0,0,8)
-asTl.BackgroundTransparency=1;asTl.Text="Message Hub";asTl.TextColor3=C_ACCENT;asTl.Font=Enum.Font.GothamBlack;asTl.TextSize=16
+asTl.BackgroundTransparency=1;asTl.Text="MHub";asTl.TextColor3=C_ACCENT;asTl.Font=Enum.Font.GothamBlack;asTl.TextSize=16
 local asSub=Instance.new("TextLabel",asFrame);asSub.Size=UDim2.new(1,0,0,20);asSub.Position=UDim2.new(0,0,0,32)
 asSub.BackgroundTransparency=1;asSub.Text="Auto Start";asSub.TextColor3=C_GREY;asSub.Font=Enum.Font.GothamBold;asSub.TextSize=12
 local function asSideBtn(text,y,action)
